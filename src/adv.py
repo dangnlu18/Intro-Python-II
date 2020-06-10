@@ -1,5 +1,15 @@
 from room import Room
+from player import Player
+import argparse
 
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument('n', type=str)
+# args = parser.parse_args()
+# if args.n:
+#     print(f'current room: {player1.current_room}')
+# elif args.w:
+#     pass
 # Declare all the rooms
 
 room = {
@@ -33,16 +43,43 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
 
+player1 = Player('steve', current_room=room['outside'])
+
 # Write a loop that:
 #
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
+
+print(room.keys())
+print(room.values())
+print(player1.room)
+
+
+user = input('choose direction: N, S, W, E --or-- q to quit: ')
+
+while not user == 'q':
+    current_location = player1.room
+    if user.lower() == 'n':
+        # print(f"player's previous location: {player1.current_room}")
+        Room.n_to()
+
+    elif user.lower() == 's':
+        Room.s_to()
+    elif user.lower() == 'w':
+        pass
+    elif user.lower() == 'e':
+        pass
+    else:
+        user = 'q'
+    user = input('choose direction: N, S, W, E --or-- q to quit: ')
+
 # * Waits for user input and decides what to do.
 #
 # If the user enters a cardinal direction, attempt to move to the room there.
