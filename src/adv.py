@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from items import Item
 import argparse
 
 
@@ -76,6 +77,8 @@ treasure.s_to = narrow
 
 player = Player('steve')
 player.current_room = outside
+foyer.add_item('sword')
+treasure.add_item('shield')
 # Write a loop that:
 #
 # * Prints the current room name
@@ -83,21 +86,58 @@ print(player.current_room.name)
 # * Prints the current description (the textwrap module might be useful here).
 print(player.current_room.description)
 
+sword = Item('sword', 'special sword')
+shield = Item('shield', 'special shield')
+# player.get_item(sword)
+# player.get_item(shield)
+# print(player.items)
+
 # * Waits for user input and decides what to do.
-user = input('choose direction: N, S, W, E --or-- q to quit: ')
+user = input('enter command: [move NSWE] [get/drop] [name item]: ')
+direction = user.split(' ')[0]
+
+if len(user.split(' ')) > 1:
+    action = user.split(' ')[1]
+    item_name = user.split(' ')[2]
+
+
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
-while not user == 'q':
-    if user in {'n', 's', 'w', 'e'}:
-        if hasattr(player.current_room, f'{user}_to'):
-            player.current_room = getattr(player.current_room, f'{user}_to')
+while not direction == 'q':
+    if direction in {'n', 's', 'w', 'e'}:
+        if hasattr(player.current_room, f'{direction}_to'):
+            player.current_room = getattr(
+                player.current_room, f'{direction}_to')
             print(player.current_room)
-            user = input('choose direction: N, S, W, E --or-- q to quit: ')
+            user = input('choose direction: N, S, W, E,  --or-- q to quit: ')
+            direction = user.split(' ')[0]
+            if direction in {'i', 'get', 'drop'}:
+                if direction == "i":
+                    print(player.items)
+                elif direction == 'get':
+                    item = user.split(' ')[1]
+                    if player.current_room.items.count(f'{item}') > 0:
+                        print(player.current_room.items)
+                        player.get_item(sword)
+                        player.current_room.items.remove(f'{item}')
+                        print(player.current_room.items)
+                    else:
+                        print('no such item in room')
+                elif direction == 'drop':
+                    item = user.split(' ')[0]
+                    print(player.items)
+                    player.drop_item(item)
+                    print(player.items)
+
+                # user = input('choose direction: N, S, W, E --or-- q to quit: ')
         else:
             print('cannot move in that direction')
             user = input('choose direction: N, S, W, E --or-- q to quit: ')
+            direction = user.split(' ')[0]
+
     else:
         print('enter in a valid direction')
         user = input('choose direction: N, S, W, E --or-- q to quit: ')
+        direction = user.split(' ')[0]
